@@ -8,13 +8,13 @@ import { hideLoading, showLoading } from "../redux/features/alertSlice";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   // Submit for Login
   const submitHandler = async (values) => {
     try {
       dispatch(showLoading());
       const { data } = await axios.post("/api/user/login", values);
-      window.location.reload();
+      // window.location.reload();
       dispatch(hideLoading());
       if (data.success) {
         localStorage.setItem("token", data.token);
