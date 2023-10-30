@@ -2,9 +2,9 @@ const express = require("express");
 const colors = require("colors");
 const moragan = require("morgan");
 const dotenv = require("dotenv");
-const userRoutes = require('./routes/userRoute');
+const userRoutes = require("./routes/userRoute");
 const adminRoutes = require("./routes/adminRoute");
-const doctorRoutes = require("./routes/doctorRoute")
+const doctorRoutes = require("./routes/doctorRoute");
 const connectDb = require("./config/connectDb");
 const path = require("path");
 
@@ -35,5 +35,5 @@ app.get("*", function (req, res) {
 const PORT = process.env.PORT || 4001;
 //listen port
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
