@@ -1,4 +1,4 @@
-import { Badge, message } from "antd";
+import { message } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -73,23 +73,6 @@ const Layout = ({ children }) => {
             </div>
           </div>
           <div className="content">
-            <div className="header">
-              <div className="header-content" style={{ cursor: "pointer" }}>
-                <Badge
-                  count={
-                    user && user.notification ? user.notification.length : 0
-                  }
-                  onClick={() => {
-                    navigate("/notification");
-                  }}
-                >
-                  <i className="fa-solid fa-bell"></i>
-                </Badge>
-              </div>
-              <div className="user-doctor-admin-name">
-                <h5>{user?.name}</h5>
-              </div>
-            </div>
             <div className="body">{children}</div>
           </div>
         </div>

@@ -4,6 +4,8 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
+import { Navigate } from "react-router-dom";
+import { setUser } from "../redux/features/userSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -26,6 +28,29 @@ const Login = () => {
     } catch (error) {
       dispatch(hideLoading());
       message.error("Something went wrong");
+    }
+    try {
+      dispatch(showLoading());
+      const { data } = await axios.post(
+        "/api/user/getUserData",
+        { token: localStorage.getItem("token") },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      dispatch(hideLoading());
+      if (data.success) {
+        dispatch(setUser(data.data));
+      } else {
+        localStorage.clear();
+        <Navigate to="/login" />;
+      }
+    } catch (error) {
+      localStorage.clear();
+      dispatch(hideLoading());
+      console.log(error);
     }
   };
 
