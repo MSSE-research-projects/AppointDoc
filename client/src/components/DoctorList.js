@@ -28,6 +28,9 @@ const DoctorList = ({ doctor }) => {
             <b>Fees Per Consultation:</b> {doctor.feesPerConsultation}
           </p>
           <p>
+            <b>Days Available:</b> {doctor.days.map((day) => day).join(", ")}
+          </p>
+          <p>
             <b>Timings:</b> {doctor.starttime} - {doctor.endtime}
           </p>
         </div>

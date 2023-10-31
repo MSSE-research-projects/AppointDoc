@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Joi = require('joi');
+const Joi = require("joi");
 
 const doctorSchema = new mongoose.Schema({
   userId: {
@@ -8,14 +8,14 @@ const doctorSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: [true, "First name is required"],
-    minlength: [2, 'Your first name must be at least 2 characters'],
-    maxlength: [50, 'Your first name cannot exceed 50 characters'],
+    minlength: [2, "Your first name must be at least 2 characters"],
+    maxlength: [50, "Your first name cannot exceed 50 characters"],
   },
   lastName: {
     type: String,
     required: [true, "Last name is required"],
-    minlength: [2, 'Your last name must be at least 2 characters'],
-    maxlength: [50, 'Your last name cannot exceed 50 characters'],
+    minlength: [2, "Your last name must be at least 2 characters"],
+    maxlength: [50, "Your last name cannot exceed 50 characters"],
   },
   phone: {
     type: String,
@@ -54,10 +54,14 @@ const doctorSchema = new mongoose.Schema({
     type: String,
     required: [true],
   },
+  days: {
+    type: [String],
+    required: [true],
+  },
   endtime: {
     type: String,
     required: [true],
-  },  
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -75,7 +79,7 @@ const docSchema = Joi.object({
   specialization: Joi.string().required(),
   experience: Joi.string().required(),
   feesPerConsultation: Joi.number().required(),
-  status: Joi.string().default('pending'),
+  status: Joi.string().default("pending"),
   starttime: Joi.string().required(),
   endtime: Joi.string().required(),
   createdAt: Joi.date().default(Date.now),

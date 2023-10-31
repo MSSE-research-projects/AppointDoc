@@ -176,6 +176,8 @@ const bookingAvailabilityController = async (req, res) => {
   try {
     const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
     const startTime = moment(req.body.time, "HH:mm").toISOString();
+    const dayOfWeek = moment(req.body.date, "DD-MM-YYYY").format("ddd");
+
     const doctorId = req.body.doctorId;
     const doctor = await doctorModel.findById(doctorId);
     if (!doctor) {
@@ -186,7 +188,10 @@ const bookingAvailabilityController = async (req, res) => {
     }
     const start = moment(doctor.starttime, "HH:mm").toISOString();
     const end = moment(doctor.endtime, "HH:mm").toISOString();
-    if (!moment(startTime).isBetween(start, end, undefined, "[]")) {
+    if (
+      !moment(startTime).isBetween(start, end, undefined, "[]") ||
+      !doctor.days.includes(dayOfWeek)
+    ) {
       return res.status(200).send({
         message: "Appointment Not Available",
         success: false,
@@ -275,6 +280,8 @@ const bookAppointmentController = async (req, res) => {
   try {
     const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
     const startTime = moment(req.body.time, "HH:mm").toISOString();
+    const dayOfWeek = moment(req.body.date, "DD-MM-YYYY").format("ddd");
+
     const doctorId = req.body.doctorId;
     const doctor = await doctorModel.findById(doctorId);
     if (!doctor) {
@@ -285,8 +292,11 @@ const bookAppointmentController = async (req, res) => {
     }
     const start = moment(doctor.starttime, "HH:mm").toISOString();
     const end = moment(doctor.endtime, "HH:mm").toISOString();
-    if (!moment(startTime).isBetween(start, end, undefined, "[]")) {
-      return res.status(400).send({
+    if (
+      !moment(startTime).isBetween(start, end, undefined, "[]") ||
+      !doctor.days.includes(dayOfWeek)
+    ) {
+      return res.status(200).send({
         message: "Selected Time Is Not Within Doctor's Available Range",
         success: false,
       });
@@ -296,9 +306,9 @@ const bookAppointmentController = async (req, res) => {
       date,
       status: "approved",
     });
-    if (appointments.length >= doctor.maxPatientsPerDay) {
-      return res.status(400).send({
-        message: "Maximum Number Of Appointments Reached For This Day",
+    if (appointments.length >= 20) {
+      return res.status(200).send({
+        message: "Maximum Number Of Appointments (20) Reached For This Day",
         success: false,
       });
     }
@@ -309,7 +319,7 @@ const bookAppointmentController = async (req, res) => {
       status: "approved",
     });
     if (existingAppointment) {
-      return res.status(400).send({
+      return res.status(200).send({
         message: "Appointment Already Booked For This Time Slot",
         success: false,
       });

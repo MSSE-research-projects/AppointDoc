@@ -1,4 +1,4 @@
-import { Col, Form, Input, Row, TimePicker, message } from "antd";
+import { Col, Form, Input, Row, TimePicker, message, Select } from "antd";
 import axios from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,12 @@ import Layout from "./../components/Layout";
 
 const ApplyDoctor = () => {
   const { user } = useSelector((state) => state.user);
+  const daysOfWeek = ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"];
+
+  const options = daysOfWeek.map((day) => ({
+    value: day,
+    label: day,
+  }));
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -17,11 +23,13 @@ const ApplyDoctor = () => {
       dispatch(showLoading());
       const starttime = values.starttime.format("HH:mm");
       const endtime = values.endtime.format("HH:mm");
+      const days = values.days;
       const res = await axios.post(
         "/api/user/apply-doctor",
         {
           ...values,
           userId: user._id,
+          days,
           starttime,
           endtime,
         },
@@ -43,6 +51,9 @@ const ApplyDoctor = () => {
       console.log(error);
       message.error("Something Went Wrong");
     }
+  };
+  const handleChange = (value) => {
+    console.log(`Selected: ${value}`);
   };
 
   return (
@@ -144,6 +155,22 @@ const ApplyDoctor = () => {
           </Col>
           <Col xs={24} md={24} lg={8}>
             <Form.Item
+              name="days"
+              label="Availability Days"
+              rules={[{ required: true }]}
+            >
+              <Select
+                mode="multiple"
+                size="middle"
+                placeholder="Please select"
+                onChange={handleChange}
+                style={{ width: "100%" }}
+                options={options}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={24} lg={8}>
+            <Form.Item
               name="starttime"
               label="Start Time"
               rules={[{ required: true }]}
@@ -160,7 +187,6 @@ const ApplyDoctor = () => {
               <TimePicker format="HH:mm" />
             </Form.Item>
           </Col>
-          <Col xs={24} md={24} lg={8}></Col>
           <Col xs={24} md={24} lg={8}>
             <br />
             <button className="btn btn-primary form-btn" type="submit">
