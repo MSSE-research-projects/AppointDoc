@@ -172,7 +172,7 @@ const ApplyDoctor = () => {
           <Col xs={24} md={24} lg={8}>
             <Form.Item
               name="starttime"
-              label="Start Time"
+              label="Clinic Hours - Start Time"
               rules={[{ required: true }]}
             >
               <TimePicker format="HH:mm" />
@@ -181,7 +181,7 @@ const ApplyDoctor = () => {
           <Col xs={24} md={24} lg={8}>
             <Form.Item
               name="endtime"
-              label="End Time"
+              label="Clinic Hours - End Time"
               rules={[{ required: true }]}
             >
               <TimePicker format="HH:mm" />
