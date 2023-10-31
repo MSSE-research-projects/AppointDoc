@@ -1,4 +1,4 @@
-import { Col, Form, Input, Row, TimePicker, message } from "antd";
+import { Col, Form, Input, Row, TimePicker, message, Select } from "antd";
 import axios from "axios";
 import moment from "moment/moment";
 import React, { useEffect, useState } from "react";
@@ -7,9 +7,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { hideLoading, showLoading } from "../../redux/features/alertSlice";
 import Layout from "./../../components/Layout";
 
-
 const Profile = () => {
   const { user } = useSelector((state) => state.user);
+  const daysOfWeek = ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"];
+
+  const options = daysOfWeek.map((day) => ({
+    value: day,
+    label: day,
+  }));
+
   const [doctor, setDoctor] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,6 +27,7 @@ const Profile = () => {
       dispatch(showLoading());
       const starttime = values.starttime.format("HH:mm");
       const endtime = values.endtime.format("HH:mm");
+      const days = values.days;
       const res = await axios.post(
         "/api/doctor/updateProfile",
         {
@@ -28,6 +35,7 @@ const Profile = () => {
           userId: user._id,
           starttime,
           endtime,
+          days,
         },
         {
           headers: {
@@ -49,7 +57,9 @@ const Profile = () => {
     }
   };
   // update doc ==========
-
+  const handleChange = (value) => {
+    console.log(`Selected: ${value}`);
+  };
   //getDOc Details
   const getDoctorInfo = async () => {
     try {
@@ -85,7 +95,7 @@ const Profile = () => {
           initialValues={{
             ...doctor,
             starttime: moment(doctor.starttime, "HH:mm"),
-            endtime: moment(doctor.endtime, "HH:mm")
+            endtime: moment(doctor.endtime, "HH:mm"),
           }}
         >
           <h4 className="">Personal Details : </h4>
@@ -179,24 +189,40 @@ const Profile = () => {
               </Form.Item>
             </Col>
             <Col xs={24} md={24} lg={8}>
-            <Form.Item
-              name="starttime"
-              label="Start Time"
-              rules={[{ required: true }]}
-            >
-              <TimePicker format="HH:mm" />
-            </Form.Item>
-          </Col>
-          <Col xs={24} md={24} lg={8}>
-            <Form.Item
-              name="endtime"
-              label="End Time"
-              rules={[{ required: true }]}
-            >
-              <TimePicker format="HH:mm" />
-            </Form.Item>
-          </Col>
-          <Col xs={24} md={24} lg={8}></Col>
+              <Form.Item
+                name="days"
+                label="Availability Days"
+                rules={[{ required: true }]}
+              >
+                <Select
+                  mode="multiple"
+                  size="middle"
+                  placeholder="Please select"
+                  onChange={handleChange}
+                  style={{ width: "100%" }}
+                  options={options}
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={24} lg={8}>
+              <Form.Item
+                name="starttime"
+                label="Clinic Hours - Start Time"
+                rules={[{ required: true }]}
+              >
+                <TimePicker format="HH:mm" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={24} lg={8}>
+              <Form.Item
+                name="endtime"
+                label="Clinic Hours - End Time"
+                rules={[{ required: true }]}
+              >
+                <TimePicker format="HH:mm" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={24} lg={8}></Col>
             <Col xs={24} md={24} lg={8}>
               <button className="btn btn-primary form-btn" type="submit">
                 Update
