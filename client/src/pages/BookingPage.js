@@ -97,7 +97,10 @@ const BookingPage = () => {
       );
       dispatch(hideLoading());
       if (res.data.success) {
-        message.success(res.data.message);
+        message.success(
+          "Appointment has been submitted successfully! You will be notified of the approval within 24 hours.",
+          10
+        );
       } else {
         message.error(res.data.message);
       }
