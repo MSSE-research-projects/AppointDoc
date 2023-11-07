@@ -1,4 +1,4 @@
-import { DatePicker, TimePicker, message } from "antd";
+import { DatePicker, message, Modal } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,14 +6,15 @@ import { useParams } from "react-router-dom";
 import Layout from "../components/Layout";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
 import "./../styles/LayoutStyles.css";
+import moment from "moment";
 
 const BookingPage = () => {
   const { user } = useSelector((state) => state.user);
   const params = useParams();
   const [doctors, setDoctors] = useState([]);
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [isAvailable, setIsAvailable] = useState();
+  const [result] = useState([]);
+
   const dispatch = useDispatch();
   // login user data
   const getUserData = async () => {
@@ -36,7 +37,7 @@ const BookingPage = () => {
   };
 
   // handleAvailability function
-  const handleAvailability = async () => {
+  const handleAvailability = async (time) => {
     try {
       dispatch(showLoading());
       const res = await axios.post(
@@ -54,9 +55,14 @@ const BookingPage = () => {
       );
       dispatch(hideLoading());
       if (res.data.success) {
-        setIsAvailable(true);
-        console.log(isAvailable);
-        message.success(res.data.message);
+        Modal.success({
+          title: `Appointment Available!`,
+          content: `Do you want to book the appointment for ${time} on ${date}?`,
+          onOk() {
+            handleBooking(time);
+          },
+          closable: true,
+        });
       } else {
         message.error(res.data.message);
       }
@@ -67,9 +73,8 @@ const BookingPage = () => {
   };
 
   // =============== booking func
-  const handleBooking = async () => {
+  const handleBooking = async (time) => {
     try {
-      setIsAvailable(true);
       if (!date && !time) {
         return alert("Date & Time Required");
       }
@@ -107,6 +112,24 @@ const BookingPage = () => {
     //eslint-disable-next-line
   }, []);
 
+  function intervals(startString, endString) {
+    var start = moment(startString, "HH:mm");
+    var end = moment(endString, "HH:mm");
+    const slotDuration = 60; // 60 minutes
+
+    while (start.isBefore(end)) {
+      if (result.includes(start.format("HH:mm"))) {
+        return null;
+      } else {
+        result.push(start.format("HH:mm"));
+        start.add(slotDuration, "minutes");
+      }
+    }
+    return result;
+  }
+
+  intervals(doctors.starttime, doctors.endtime);
+
   return (
     <Layout>
       <div className="container">
@@ -139,26 +162,19 @@ const BookingPage = () => {
                       setDate(selectedDate);
                     }}
                   />
-                  <TimePicker
-                    format="HH:mm"
-                    className="m-2 time-picker"
-                    onChange={(time) => setTime(time && time.format("HH:mm"))}
-                  />
-                  <div className="d-flex justify-content-center">
-                    <button
-                      className="btn btn-primary mt-2 w-100"
-                      onClick={handleAvailability}
-                    >
-                      Check Availability
-                    </button>
-                  </div>
-                  <div className="d-flex justify-content-center">
-                    <button
-                      className="btn btn-dark mt-2 w-100"
-                      onClick={handleBooking}
-                    >
-                      Book Now
-                    </button>
+                  <div>
+                    {date && result && result.length > 0
+                      ? result.map((time, index) => {
+                          return (
+                            <button
+                              className="btn btn-primary mt-2 w-100"
+                              onClick={() => handleAvailability(time)}
+                            >
+                              {time}
+                            </button>
+                          );
+                        })
+                      : null}
                   </div>
                 </div>
               </div>
