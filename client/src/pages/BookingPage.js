@@ -12,6 +12,7 @@ const BookingPage = () => {
   const { user } = useSelector((state) => state.user);
   const params = useParams();
   const [doctors, setDoctors] = useState([]);
+  const [slotsVisible, setSlotsVisible] = useState(false);
   const [date, setDate] = useState("");
   const [result] = useState([]);
 
@@ -115,6 +116,15 @@ const BookingPage = () => {
     //eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    if (date !== "") {
+      const dayOfWeek = moment(date, "DD-MM-YYYY").format("ddd");
+      if (doctors.days.includes(dayOfWeek)) {
+        setSlotsVisible(true);
+      }
+    }
+  }, [date, doctors.days]);
+
   function intervals(startString, endString) {
     var start = moment(startString, "HH:mm");
     var end = moment(endString, "HH:mm");
@@ -166,7 +176,7 @@ const BookingPage = () => {
                     }}
                   />
                   <div>
-                    {date && result && result.length > 0
+                    {date && slotsVisible && result && result.length > 0
                       ? result.map((time, index) => {
                           return (
                             <button

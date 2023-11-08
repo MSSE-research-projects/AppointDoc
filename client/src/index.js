@@ -13,12 +13,12 @@ class Root extends React.Component {
       "https://usability-session.onrender.com/static/plugin/instrumentation.js";
 
     script.addEventListener("load", () => {
-      localStorage.setItem("scenarioId", "65413bee580e95ba4360cdc9");
+      localStorage.setItem("scenarioId", "654be8a1464dea7945472dac");
 
       setTimeout(() => {
         window.instrumentation.start({
           serverUrl: "usability-session.onrender.com",
-          scenarioId: "65413bee580e95ba4360cdc9",
+          scenarioId: "654be8a1464dea7945472dac",
         });
       }, 3000);
     });
