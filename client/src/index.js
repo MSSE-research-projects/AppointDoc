@@ -10,15 +10,15 @@ class Root extends React.Component {
   componentDidMount() {
     const script = document.createElement("script");
     script.src =
-      "https://usability-session.onrender.com/static/plugin/instrumentation.js";
+      "https://usability-session-vfqp.onrender.com/static/plugin/instrumentation.js";
 
     script.addEventListener("load", () => {
-      localStorage.setItem("scenarioId", "654be8a1464dea7945472dac");
+      localStorage.setItem("scenarioId", "654eb43df76c4e08a6a45984");
 
       setTimeout(() => {
         window.instrumentation.start({
-          serverUrl: "usability-session.onrender.com",
-          scenarioId: "654be8a1464dea7945472dac",
+          serverUrl: "usability-session-vfqp.onrender.com",
+          scenarioId: "654eb43df76c4e08a6a45984",
         });
       }, 3000);
     });
